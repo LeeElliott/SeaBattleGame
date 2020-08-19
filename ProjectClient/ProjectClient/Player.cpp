@@ -3,9 +3,12 @@
 Player::Player()
 {
 	// Set random starting position
-	position.x = static_cast <float> (rand() % 2048);
-	position.y = static_cast <float> (rand() % 2048);
+	position.x = static_cast <float> (rand() % 4096);
+	position.y = static_cast <float> (rand() % 4096);
 	setPosition(position);
+
+	moveSpeed = 64.0f;
+	turnSpeed = 30.0f;
 }
 
 Player::~Player()
@@ -22,31 +25,26 @@ void Player::update(float dt)
 
 		sf::Vector2f mouse_pos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
 
-		sf::Vector2f newPosition = Lerp(position, mouse_pos);		
+		sf::Vector2f newPosition = PositionLerp(dt);
 
 		// Rotate to face cursor
-		const float PI = 3.14159265f;
-
-		float dx = position.x - newPosition.x;
-		float dy = position.y - newPosition.y;
-
-		float rotation = (atan2(dy, dx)) * 180 / PI;
-		setRotation(rotation + 180);
+		float newRotation = RotationLerp(newPosition, mouse_pos, getRotation(), dt);
 
 		if (newPosition.x < 0)
-			newPosition.x = 2048;
-		else if (newPosition.x > 2048)
+			newPosition.x = 4096;
+		else if (newPosition.x > 4096)
 			newPosition.x = 0;
 		else if (newPosition.y < 0)
-			newPosition.y = 2048;
-		else if (newPosition.y > 2048)
+			newPosition.y = 4096;
+		else if (newPosition.y > 4096)
 			newPosition.y = 0;
 
 		setPosition(newPosition);
+		setRotation(newRotation);
 
 		updateAABB();
 	}
-	
+
 	checkCollision();
 }
 
@@ -57,45 +55,69 @@ void Player::setInput(Input * in)
 
 
 
-sf::Vector2f Player::Lerp(sf::Vector2f a, sf::Vector2f b)
+sf::Vector2f Player::PositionLerp(float dt)
 {
-	sf::Vector2f factor = 0.001f * (b - a);
+	sf::Vector2f currentPosition = getPosition();
 
-	// Limit the max speed
-	if (factor.x > 0.5f)
-	{
-		factor.x = 0.5f;
-	}
-	if (factor.x < -0.5f)
-	{
-		factor.x = -0.5f;
-	}
-	if (factor.y > 0.5f)
-	{
-		factor.y = 0.5f;
-	}
-	if (factor.y < -0.5f)
-	{
-		factor.y = -0.5f;
-	}
+	// Calculate forward vector
+	forward.x = cosf((getRotation() * 3.14159265359) / 180);
+	forward.y = sinf((getRotation() * 3.14159265359) / 180);
 
-	sf::Vector2f lerp = a + factor;
+	sf::Vector2f lerp = currentPosition + ((forward * moveSpeed) * dt);
 
 	return lerp;
 }
 
+float Player::RotationLerp(sf::Vector2f cp, sf::Vector2f mp, float r, float dt)
+{
+	float newRotation = r;
+	sf::Vector2f target;
+
+	// Calculate forward vector
+	forward.x = cosf((r * 3.14159265359) / 180);
+	forward.y = sinf((r * 3.14159265359) / 180);
+
+	// Calculate target vector
+	target = mp - cp;
+
+	// Calculate angle between vectors
+	angle = atan2f(forward.x * target.y - forward.y * target.x, forward.x * target.x + forward.y * target.y);
+
+	// Convert radians to degrees
+	angle = (angle * 180) / 3.14159265359;
+
+	// Subtract calculated angle from forward angle
+	angleDifference = ((r * 3.14159265359) / 180) - angle;
+
+	if (angleDifference > 0.05f)
+	{
+		if (newRotation + (turnSpeed * dt) <= 360)
+		{
+			newRotation += turnSpeed * dt;
+		}
+		else
+		{
+			newRotation = (turnSpeed * dt) - (360 - newRotation);
+		}
+	}
+	else if (angleDifference < -0.05f)
+	{
+		if (newRotation - (turnSpeed * dt) >= 0)
+		{
+			newRotation -= (turnSpeed * dt);
+		}
+		else
+		{
+			newRotation = 360 + (newRotation - (turnSpeed * dt));
+		}
+	}
+
+	return newRotation;
+}
+
 void Player::destroyed()
 {
-	// Reset size
-	setSize(sf::Vector2f(64.0f, 64.0));
-	setSize(sf::Vector2f(64.0f, 64.0));
-	setOrigin(sf::Vector2f(32.0f, 32.0f));
-
-	// Move to random location
-	position.x = static_cast <float> (rand() % 2048);
-	position.y = static_cast <float> (rand() % 2048);
-	setPosition(position);
-
+	
 }
 
 

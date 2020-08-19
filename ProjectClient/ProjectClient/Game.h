@@ -22,6 +22,8 @@ public:
 	void Update(float deltaTime);
 	void Render();
 
+	void RenderUI();
+
 protected:
 	enum GameState 
 	{
@@ -40,7 +42,7 @@ protected:
 
 	sf::Clock clock;
 	float deltaTime;
-
+	sf::Font font;
 
 	// Graphics
 	sf::Texture splashTex;	// Used to show connection not yet made
@@ -52,6 +54,12 @@ protected:
 
 	sf::Vector2f position;
 	float counter;
+
+	// Hud text
+	sf::Text positionText;
+	sf::Text rotationText;
+	sf::Text angleText;
+	sf::Text forwardText;
 };
 
 #endif // !GAME_H

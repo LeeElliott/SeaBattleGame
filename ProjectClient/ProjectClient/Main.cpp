@@ -7,8 +7,8 @@
 
 
 // Values may change
-#define WORLD_WIDTH 2048;
-#define WORLD_HEIGHT 2048;
+#define WORLD_WIDTH 4096;
+#define WORLD_HEIGHT 4096;
 
 void processInput(sf::RenderWindow* hwnd, Input* input)
 {

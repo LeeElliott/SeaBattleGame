@@ -2,6 +2,7 @@
 
 #include <SFML/System.hpp>
 #include <SFML/Network.hpp>
+#include <sqlite3.h>
 
 // The IP address of the server
 #define SERVERIP "127.0.0.1"
@@ -31,6 +32,8 @@ float rotation[50];
 
 void main(int argc, char** argv[])
 {
+
+
 	socket.setBlocking(false);
 	if (socket.bind(SERVERPORT) != sf::Socket::Done)
 	{

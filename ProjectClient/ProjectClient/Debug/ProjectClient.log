@@ -1,2 +1,19 @@
-﻿  EnemyManager.cpp
-  ProjectClient.vcxproj -> C:\Users\User\Documents\Resits\Game\ProjectClient\Debug\ProjectClient.exe
+﻿  Game.cpp
+  Main.cpp
+c:\users\user\documents\github\seabattlegame\projectclient\projectclient\main.cpp(25): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+c:\users\user\documents\github\seabattlegame\projectclient\projectclient\main.cpp(83): warning C4326: return type of 'main' should be 'int' instead of 'void'
+c:\users\user\documents\github\seabattlegame\projectclient\projectclient\main.cpp(84): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  NetworkManager.cpp
+  Player.cpp
+c:\users\user\documents\github\seabattlegame\projectclient\projectclient\player.cpp(63): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\user\documents\github\seabattlegame\projectclient\projectclient\player.cpp(64): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\user\documents\github\seabattlegame\projectclient\projectclient\player.cpp(77): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\user\documents\github\seabattlegame\projectclient\projectclient\player.cpp(78): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\user\documents\github\seabattlegame\projectclient\projectclient\player.cpp(87): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\user\documents\github\seabattlegame\projectclient\projectclient\player.cpp(90): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
+  ProjectClient.vcxproj -> C:\Users\User\Documents\GitHub\SeaBattleGame\ProjectClient\Debug\ProjectClient.exe

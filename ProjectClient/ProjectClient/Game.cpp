@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Game.h"
+#include <iostream>
 
 
 Game::Game(sf::RenderWindow* hwnd, Input* in)
@@ -16,8 +17,8 @@ Game::Game(sf::RenderWindow* hwnd, Input* in)
 
 	// Load background
 	backTex.loadFromFile("gfx/Background.png");
-	rect.setSize(sf::Vector2f(2730.0f, 2730.0f));
-	rect.setPosition(sf::Vector2f(-341.0f, -341.0f));
+	rect.setSize(sf::Vector2f(4500.0f, 4500.0f));
+	rect.setPosition(sf::Vector2f(-202.0f, -202.0f));
 	rect.setTexture(&backTex);
 
 	// Load player
@@ -35,6 +36,35 @@ Game::Game(sf::RenderWindow* hwnd, Input* in)
 	cursor.setTexture(&cursorTex);
 	cursor.setPosition(400, 300);
 	cursor.passInput(in);
+
+	if (!font.loadFromFile("gfx/arial.ttf"))
+	{
+		std::cout << "Font could not be loaded";
+	}
+
+	positionText.setString("");
+	positionText.setFont(font);
+	positionText.setCharacterSize(19);
+	positionText.setFillColor(sf::Color::Black);
+	positionText.setPosition(3, 3);
+
+	rotationText.setString("");
+	rotationText.setFont(font);
+	rotationText.setCharacterSize(19);
+	rotationText.setFillColor(sf::Color::Black);
+	rotationText.setPosition(600, 3);
+
+	angleText.setString("");
+	angleText.setFont(font);
+	angleText.setCharacterSize(19);
+	angleText.setFillColor(sf::Color::Black);
+	angleText.setPosition(3, 3);
+
+	forwardText.setString("");
+	forwardText.setFont(font);
+	forwardText.setCharacterSize(19);
+	forwardText.setFillColor(sf::Color::Black);
+	forwardText.setPosition(600, 3);
 
 	counter = 0.2f;
 }
@@ -101,8 +131,36 @@ void Game::Render()
 	window->draw(cursor);
 	eManager.render(window);
 	
+	// Render UI
+	RenderUI();
 
 	// Display on screen
 	window->display();
 }
 
+void Game::RenderUI()
+{
+	sf::View view = window->getView();
+
+	// Debug info
+	positionText.setString("Position : (" + std::to_string(player.getPosition().x) + ", "
+		+ std::to_string(player.getPosition().y) + ")");
+	positionText.setPosition(view.getCenter().x - 317, view.getCenter().y - 173);
+
+	rotationText.setString("Rotation : " + std::to_string(player.getRotation()) + " deg");
+	rotationText.setPosition(view.getCenter().x + 105, view.getCenter().y - 173);
+
+	angleText.setString("Angle to mouse : " + std::to_string(player.getAngle()) + " deg");
+	angleText.setPosition(view.getCenter().x + 45, view.getCenter().y + 153);
+
+	forwardText.setString("Forward : (" + std::to_string(player.getForward().x) + ", " 
+	+ std::to_string(player.getForward().y) + ")");
+	forwardText.setPosition(view.getCenter().x - 317, view.getCenter().y + 153);
+
+	window->draw(positionText);
+	window->draw(rotationText);
+	window->draw(angleText);
+	window->draw(forwardText);
+
+	// 
+}
