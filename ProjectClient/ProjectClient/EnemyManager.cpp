@@ -4,6 +4,15 @@ EnemyManager::EnemyManager()
 {
 	enemyTex.loadFromFile("gfx/enemyship.png");
 
+	enemies.push_back(Enemy());
+	enemies[currentEnemies].setActive(true);
+	enemies[currentEnemies].setPosition(400, 400);
+	enemies[currentEnemies].setMyPosition(sf::Vector2f(400, 400));
+	enemies[currentEnemies].setOrigin(sf::Vector2f(32, 32));
+	enemies[currentEnemies].setID(3);
+	enemies[currentEnemies].setRotation(0);
+	enemies[currentEnemies].setSize(sf::Vector2f(64, 64));
+	enemies[currentEnemies].setTexture(&enemyTex);
 }
 
 EnemyManager::~EnemyManager()
@@ -30,26 +39,48 @@ void EnemyManager::update(float dt)
 	}
 }
 
-sf::Vector2f EnemyManager::checkPositions(sf::Vector2f playerPos, float rotation)
+float EnemyManager::ProximityLeft(sf::Vector2f pPos, float range, float pRot)
 {
-	for (size_t i = 0; i < 20; i++)
+	float closest = 999;
+	float angle = 999;
+
+	for (auto &enemy : enemies)
 	{
-		// Calculate vector line between player and enemy
-		sf::Vector2f enemyPos = enemies[i].getPosition();
-		sf::Vector2f playerToEnemy = sf::Vector2f(playerPos.x - enemyPos.x, playerPos.y - enemyPos.y);
+		// Calculate distance between player and enemy
+		float distance = sqrtf(powf(enemy.getPosition().x - pPos.x, 2) + powf(enemy.getPosition().y - pPos.y, 2));
 
-		// Calculate the angle of this vector from 0
-		float angleToEnemy = atan(playerToEnemy.y / playerToEnemy.x);
-		angleToEnemy = (float)(180 / 3.14159265) * angleToEnemy;
-
-		// Compare to player rotation +90
-		if (angleToEnemy - rotation > 75.0f && angleToEnemy - rotation < 105.0f)
+		if (distance <= range)
 		{
-			return sf::Vector2f(sqrt(playerToEnemy.x), sqrt(playerToEnemy.y));
-		}		
+			// Calculate angle
+			float vectorAngle = atan2f((enemy.getPosition().x - pPos.x), (enemy.getPosition().y - pPos.y));
+			vectorAngle *= 180 / 3.14159265359;
+			if (vectorAngle < 0)
+			{
+				vectorAngle = 360 + vectorAngle;
+			}
+
+			float playerRotation = pRot;
+
+			if (playerRotation < 90)
+			{
+				playerRotation += 360;
+			}
+
+			// Calculate difference
+			float tempAngle = playerRotation - vectorAngle;
+
+			if (tempAngle > -100 && tempAngle < -80)
+			{
+				if (distance < closest)
+				{
+					closest = distance;
+					angle = tempAngle;
+				}
+			}
+		}
 	}
 
-	return sf::Vector2f(0.0f, 0.0f);
+	return angle;
 }
 
 void EnemyManager::addEnemy(sf::Vector2f pos, sf::Vector2f origin, sf::Vector2f size, int id, float rot)

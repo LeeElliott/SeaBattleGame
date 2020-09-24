@@ -21,6 +21,9 @@ Game::Game(sf::RenderWindow* hwnd, Input* in)
 	rect.setPosition(sf::Vector2f(-202.0f, -202.0f));
 	rect.setTexture(&backTex);
 
+	// Load cannonball texture
+	shotTex.loadFromFile("gfx/cannonball.png");
+
 	// Load player
 	playerTex.loadFromFile("gfx/playership.png");
 	player.setSize(sf::Vector2f(64.0f, 64.0f));
@@ -29,7 +32,8 @@ Game::Game(sf::RenderWindow* hwnd, Input* in)
 	player.setInput(in);
 	player.setWindow(window);
 	player.setEnemyMan(&eManager);
-
+	player.setProjectileMan(&pManager);
+	
 	// Load cursor
 	cursorTex.loadFromFile("gfx/cursor.png");
 	cursor.setSize(sf::Vector2f(32, 32));
@@ -89,6 +93,7 @@ void Game::Update(float deltaTime)
 	cursor.update(deltaTime);
 	player.update(deltaTime);
 	eManager.update(deltaTime);
+	pManager.Update(deltaTime);
 	
 	if (counter < 0.0f)
 	{
@@ -130,6 +135,7 @@ void Game::Render()
 	window->draw(player);
 	window->draw(cursor);
 	eManager.render(window);
+	pManager.Render(window);
 	
 	// Render UI
 	RenderUI();
@@ -150,7 +156,11 @@ void Game::RenderUI()
 	rotationText.setString("Rotation : " + std::to_string(player.getRotation()) + " deg");
 	rotationText.setPosition(view.getCenter().x + 105, view.getCenter().y - 173);
 
-	angleText.setString("Angle to mouse : " + std::to_string(player.getAngle()) + " deg");
+	//angleText.setString("Angle to mouse : " + std::to_string(player.getAngle()) + " deg");
+	//angleText.setPosition(view.getCenter().x + 45, view.getCenter().y + 153);
+
+
+	angleText.setString("Cannon Rot : " + std::to_string(pManager.getCR()) + " deg");
 	angleText.setPosition(view.getCenter().x + 45, view.getCenter().y + 153);
 
 	forwardText.setString("Forward : (" + std::to_string(player.getForward().x) + ", " 

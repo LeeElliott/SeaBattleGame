@@ -8,6 +8,7 @@
 #include "Cursor.h"
 #include "EnemyManager.h"
 #include "NetworkManager.h"
+#include "ProjectileManager.h"
 #include "Input.h"
 #include "Player.h"
 
@@ -39,6 +40,7 @@ protected:
 	Player player;
 	EnemyManager eManager;
 	NetworkManager nManager;
+	ProjectileManager pManager;
 
 	sf::Clock clock;
 	float deltaTime;
@@ -49,6 +51,7 @@ protected:
 	sf::Texture playerTex;
 	sf::Texture cursorTex;
 	sf::Texture backTex;
+	sf::Texture shotTex;
 
 	sf::RectangleShape rect;
 

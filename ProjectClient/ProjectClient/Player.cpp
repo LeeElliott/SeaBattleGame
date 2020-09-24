@@ -3,12 +3,15 @@
 Player::Player()
 {
 	// Set random starting position
-	position.x = static_cast <float> (rand() % 4096);
-	position.y = static_cast <float> (rand() % 4096);
+	position.x = 450;//static_cast <float> (rand() % 4096);
+	position.y = 450;//static_cast <float> (rand() % 4096);
 	setPosition(position);
+	forward = sf::Vector2f(1, 0);
 
 	moveSpeed = 64.0f;
 	turnSpeed = 30.0f;
+	fireRate = 2;
+	range = 90;
 }
 
 Player::~Player()
@@ -43,6 +46,24 @@ void Player::update(float dt)
 		setRotation(newRotation);
 
 		updateAABB();
+	}
+		
+
+	for (auto enemy : eManager->enemies)
+	{
+		float leftTarget = eManager->ProximityLeft(getPosition(), range, getRotation());
+		if (leftTarget != 999)
+		{
+			if (fireDelay <= 0)
+			{
+				Fire(leftTarget);
+				fireDelay = fireRate;
+			}
+			else
+			{
+				fireDelay -= dt;
+			}
+		}
 	}
 
 	checkCollision();
@@ -115,6 +136,23 @@ float Player::RotationLerp(sf::Vector2f cp, sf::Vector2f mp, float r, float dt)
 	return newRotation;
 }
 
+void Player::Fire(float angle)
+{
+	// Calculate forward vector
+	forward.x = cosf((getRotation() * 3.14159265359) / 180);
+	forward.y = sinf((getRotation() * 3.14159265359) / 180);
+
+	// Magnification
+	sf::Vector2f scalar = sf::Vector2f(forward.x * 7, forward.y * 7);
+
+	// Projectile creation, with location, angle and range
+	//pManager->AddOwnProjectile(getPosition() - scalar, 64, getRotation() + 94, 90);
+	//pManager->AddOwnProjectile(getPosition(), 64, getRotation() + 90, 90);
+	//pManager->AddOwnProjectile(getPosition() + scalar, 64, getRotation() + 86, 90);
+
+	pManager->AddOwnProjectile(getPosition(), 64, getRotation() + angle, 90);
+}
+
 void Player::destroyed()
 {
 	
@@ -169,12 +207,3 @@ bool Player::enemyCollision(int i)
 	return true;
 }
 
-sf::Vector2f Player::generateUnitVector(float angle)
-{
-	// Generates a unit vector from provided angle
-	sf::Vector2f vector;
-	vector.x = cos(angle);
-	vector.y = sin(angle);
-
-	return vector;
-}

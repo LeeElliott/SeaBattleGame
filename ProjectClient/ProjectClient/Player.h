@@ -6,6 +6,7 @@
 #include "Sprite.h"
 #include "Input.h"
 #include "EnemyManager.h"
+#include "ProjectileManager.h"
 
 class Player : public Sprite
 {
@@ -18,8 +19,8 @@ public:
 	void setWindow(sf::RenderWindow* hwnd) { window = hwnd; }
 	void setCentre(sf::Vector2f c) { screenCentre = c; }
 	void setEnemyMan(EnemyManager* eM) { eManager = eM; }
-	sf::Vector2f PositionLerp(float dt);
-	float RotationLerp(sf::Vector2f a, sf::Vector2f b, float r, float dt);
+	void setProjectileMan(ProjectileManager* pM) { pManager = pM; }
+	void setShotTexture(sf::Texture* sT) { shotTex = sT; }
 
 	// Getters for stat variables
 	int getUserID() { return userID; }
@@ -29,6 +30,7 @@ public:
 	float getMoveSpeed() { return moveSpeed; }
 	float getTurnSpeed() { return turnSpeed; }
 	int getNumCannon() { return numCannon; }
+	float getRange() { return range; }
 	float getFireSpread() { return fireSpread; }
 	float getDamage() { return damage; }
 	float getFireRate() { return fireRate; }
@@ -41,6 +43,7 @@ public:
 	void setMoveSpeed(float mSpeed) { moveSpeed = mSpeed; }
 	void setTurnSpeed(float tSpeed) { turnSpeed = tSpeed; }
 	void setNumCannon(int nCannon) { numCannon = nCannon; }
+	void setRange(float r) { range = r; }
 	void setFireSpread(float spread) { fireSpread = spread; }
 	void setDamage(float dam) { damage = dam; }
 	void setFireRate(float rate) { fireRate = rate; }
@@ -53,13 +56,22 @@ protected:
 	void destroyed();
 	void checkCollision();
 	bool enemyCollision(int i);
-	sf::Vector2f generateUnitVector(float angle);
+
+	// Movement and rotation
+	sf::Vector2f PositionLerp(float dt);
+	float RotationLerp(sf::Vector2f a, sf::Vector2f b, float r, float dt);
+	
+	// Fire!!
+	void Fire(float angle);
 
 	Input* input;
 	sf::RenderWindow* window;
 	EnemyManager* eManager;
+	ProjectileManager* pManager;
 
 	sf::Vector2f position, screenCentre;
+
+	float fireDelay;
 
 	// Stat variables to be loaded from database
 	int userID;
@@ -69,9 +81,12 @@ protected:
 	float moveSpeed;
 	float turnSpeed;
 	int numCannon;
+	float range;
 	float fireSpread;
 	float damage;
 	float fireRate;
+
+	sf::Texture* shotTex;
 
 	/* DEBUG */
 	float angle;

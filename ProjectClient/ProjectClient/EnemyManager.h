@@ -11,7 +11,7 @@ public:
 
 	void update(float dt);
 
-	sf::Vector2f checkPositions(sf::Vector2f playerPos, float rotation);
+	float ProximityLeft(sf::Vector2f pPos, float range, float pRot);
 	void addEnemy(sf::Vector2f pos, sf::Vector2f origin, sf::Vector2f size, int id, float rot);
 	void render(sf::RenderWindow* window);
 	

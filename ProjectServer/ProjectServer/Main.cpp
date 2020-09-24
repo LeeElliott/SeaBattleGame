@@ -159,5 +159,10 @@ void receiveUpdate()
 				}
 			}
 		}
+
+		std::string debug = "ID : " + std::to_string(port) + "\n Updating....."
+			+ "Position : (" + std::to_string(posX) + ", " + std::to_string(posY) + ")\n"
+			+ "Rotation : " + std::to_string(rot) + "\n";
+		fprintf(stderr, debug.c_str());
 	}
 }
