@@ -69,7 +69,51 @@ float EnemyManager::ProximityLeft(sf::Vector2f pPos, float range, float pRot)
 			// Calculate difference
 			float tempAngle = playerRotation - vectorAngle;
 
-			if (tempAngle > -100 && tempAngle < -80)
+			if (tempAngle < 135 && tempAngle > 45)
+			{
+				if (distance < closest)
+				{
+					closest = distance;
+					angle = tempAngle;
+				}
+			}
+		}
+	}
+
+	return angle;
+}
+
+float EnemyManager::ProximityRight(sf::Vector2f pPos, float range, float pRot)
+{
+	float closest = 999;
+	float angle = 999;
+
+	for (auto &enemy : enemies)
+	{
+		// Calculate distance between player and enemy
+		float distance = sqrtf(powf(enemy.getPosition().x - pPos.x, 2) + powf(enemy.getPosition().y - pPos.y, 2));
+
+		if (distance <= range)
+		{
+			// Calculate angle
+			float vectorAngle = atan2f((enemy.getPosition().x - pPos.x), (enemy.getPosition().y - pPos.y));
+			vectorAngle *= 180 / 3.14159265359;
+			if (vectorAngle < 0)
+			{
+				vectorAngle = 360 + vectorAngle;
+			}
+
+			float playerRotation = pRot;
+
+			if (playerRotation < 90)
+			{
+				playerRotation += 360;
+			}
+
+			// Calculate difference
+			float tempAngle = playerRotation - vectorAngle;
+
+			if (tempAngle < 315 && tempAngle > 225)
 			{
 				if (distance < closest)
 				{

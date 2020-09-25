@@ -71,7 +71,8 @@ protected:
 
 	sf::Vector2f position, screenCentre;
 
-	float fireDelay;
+	float leftDelay;
+	float rightDelay;
 
 	// Stat variables to be loaded from database
 	int userID;

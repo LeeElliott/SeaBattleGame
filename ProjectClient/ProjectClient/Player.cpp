@@ -3,15 +3,16 @@
 Player::Player()
 {
 	// Set random starting position
-	position.x = 450;//static_cast <float> (rand() % 4096);
-	position.y = 450;//static_cast <float> (rand() % 4096);
+	position.x = 400;//static_cast <float> (rand() % 4096);
+	position.y = 500;//static_cast <float> (rand() % 4096);
 	setPosition(position);
 	forward = sf::Vector2f(1, 0);
 
 	moveSpeed = 64.0f;
 	turnSpeed = 30.0f;
 	fireRate = 2;
-	range = 90;
+	range = 200;
+	numCannon = 2;
 }
 
 Player::~Player()
@@ -54,14 +55,28 @@ void Player::update(float dt)
 		float leftTarget = eManager->ProximityLeft(getPosition(), range, getRotation());
 		if (leftTarget != 999)
 		{
-			if (fireDelay <= 0)
+			if (leftDelay <= 0)
 			{
-				Fire(leftTarget);
-				fireDelay = fireRate;
+				Fire(getRotation() - 90);
+				leftDelay = fireRate;
 			}
 			else
 			{
-				fireDelay -= dt;
+				leftDelay -= dt;
+			}
+		}
+
+		float rightTarget = eManager->ProximityLeft(getPosition(), range, getRotation());
+		if (rightTarget != 999)
+		{
+			if (rightDelay <= 0)
+			{
+				Fire(getRotation() + 90);
+				rightDelay = fireRate;
+			}
+			else
+			{
+				rightDelay -= dt;
 			}
 		}
 	}
@@ -143,14 +158,22 @@ void Player::Fire(float angle)
 	forward.y = sinf((getRotation() * 3.14159265359) / 180);
 
 	// Magnification
-	sf::Vector2f scalar = sf::Vector2f(forward.x * 7, forward.y * 7);
+	sf::Vector2f back = sf::Vector2f(getPosition().x - (forward.x * 32), getPosition().y - (forward.y * 32));
+	sf::Vector2f scalar = sf::Vector2f(forward.x * (64 / (numCannon + 1)), forward.y * (64 / (numCannon + 1)));
 
 	// Projectile creation, with location, angle and range
 	//pManager->AddOwnProjectile(getPosition() - scalar, 64, getRotation() + 94, 90);
 	//pManager->AddOwnProjectile(getPosition(), 64, getRotation() + 90, 90);
 	//pManager->AddOwnProjectile(getPosition() + scalar, 64, getRotation() + 86, 90);
 
-	pManager->AddOwnProjectile(getPosition(), 64, getRotation() + angle, 90);
+	for (int i = 0; i < numCannon; i++)
+	{
+		// Evenly spaced cannons
+		sf::Vector2f cannonPosition = sf::Vector2f(back.x + ((i + 1) * scalar.x), back.y + ((i + 1) * scalar.y));
+		pManager->AddOwnProjectile(cannonPosition, 64, getRotation() + angle, range);
+	}
+
+	//pManager->AddOwnProjectile(getPosition(), 64, getRotation() + angle, range);
 }
 
 void Player::destroyed()
