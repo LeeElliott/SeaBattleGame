@@ -1,0 +1,4 @@
+CLEAR OUT 
+.OBJ
+.IPCH
+.SDF
